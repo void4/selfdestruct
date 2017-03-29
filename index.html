@@ -134,8 +134,13 @@ function process() {
   case 37://SUBI OP1 <- OP2 - [OP3]
     state[op1] = pymod(cell(op2) - op3, state.length)
 		break
+
   case 41://MULI OP1 <- OP2 * [OP3]
     state[op1] = (cell(op2) * op3) % state.length
+		break
+
+  case 43://MOVI OP1 <- *[OP2]
+    state[op1] = cell(cell(op2))
 		break
 	}
 

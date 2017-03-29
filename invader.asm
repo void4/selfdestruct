@@ -1,6 +1,7 @@
 start:
 set mouse 3840
 set mouse2 3840
+set zero 0
 set one 1
 set p1 3041
 set p1x 32
@@ -9,6 +10,7 @@ set dirx 0
 set diry 0
 set walll 2
 set wallr 62
+set temp 0
 loop:
 
 ;move particle
@@ -26,17 +28,12 @@ eup:
 subi p1y 1
 eupdown:
 
-;draw particle
-seti p1 0
-muli p1 p1y 64
-add p1 p1x
-seti p1 255
+
 
 set collision 0
 
 ;draw cursor
 addi mouse 1 3840
-;jumpe mouse mouse2 mousenotmoved
 seti mouse2 0
 addi mouse2 1
 seti mouse2 0
@@ -63,16 +60,17 @@ check3:
 
 seti mouse 255
 addi mouse 1
-;mousenotmoved:
 
 ;check if particle is at mouse position
 jumpn collision one unequal
 set diry 1
 sub dirx one dirx
+subi p1y 1
 jump endif
 
 unequal:
-jumpg p1y one skip
+movi temp p1
+jumpg temp one skip
 set diry 0
 skip:
 endif:
@@ -86,6 +84,10 @@ jumpg wallr p1x skipright
 set dirx 0
 skipright:
 
-
+;draw particle
+seti p1 0
+muli p1 p1y 64
+add p1 p1x
+seti p1 255
 
 jump loop
