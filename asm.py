@@ -2,39 +2,39 @@ f = open("invader.asm")
 lines = f.readlines()
 f.close()
 
-opcodes = ["mul", "seti", "set", "mov", "add", "jumpe", "sub", "jump", "jumpg", "jumpn", "addi", "subi"]
+opcodes = ["mul", "muli", "seti", "set", "mov", "add", "jumpe", "sub", "jump", "jumpg", "jumpn", "addi", "subi"]
 
 labels = {}
-opcounter = 1
+opcounter = 4
 
-lines = [[line] for line in lines]
+lines = [{"source":line} for line in lines]
 for row in lines:
-    line = row[0]
+    line = row["source"]
     clean = line.strip().lower()
     if ";" in clean:
         clean = clean[:clean.find(";")]
 
-    row.append(clean)
+    row["clean"] = clean
 
     opline = clean.split(" ")
-    row.append(opline)
+    row["opline"] = opline
 
     if len(opline) == 1 and opline[0].endswith(":"):
         labels[opline[0][:-1]] = opcounter
         ignore = True
     elif opline[0] in opcodes:#meh
-        opcounter += 1
+        opcounter += 4
         ignore = False
     elif opline[0]:
         raise Exception("Invalid symbol:", opline[0])
     else:
         #print("IGNORED", row)
         ignore = True
-    row.append(ignore)
-    row.append(opcounter-1)
+    row["ignore"] = ignore
+    row["opcount"] = opcounter
 
 #print("Labels", labels)
-varindex = opcounter + 1#XXX
+varindex = opcounter#XXX
 var = {}
 
 def addvar(name):
@@ -56,14 +56,14 @@ def intorlabel(opn):
     try:
         return int(opn) * 4
     except ValueError:
-        return labels[opn] * 4
+        return labels[opn]
 
 code = [4, 0, 0, 0]
 for row in lines:
     #print(row)
-    if row[3]:
+    if row["ignore"]:
         continue
-    line = row[2]
+    line = row["opline"]
     op = line[0]
     op1 = line[1]
     op2 = line[2] if len(line)>2 else None
@@ -108,20 +108,25 @@ for row in lines:
             code += [37, intorvar(op1), intorvar(op1), intorvar(op2)]
         else:
             code += [37, intorvar(op1), intorvar(op2), intorvar(op3)]
+    elif op == "muli":
+        if len(line) == 3:
+            code += [41, intorvar(op1), intorvar(op1), intorvar(op2)]
+        else:
+            code += [41, intorvar(op1), intorvar(op2), intorvar(op3)]
     else:
         raise Exception("Unknown opcode")
 
     code += [0 for i in range((4-len(code)%4)%4)]
-    row.append(code[-4:])
+    row["code"] = code[-4:]
 
 print(code)
 for i, row in enumerate(lines):
-    if row[4] in labels.values():
+
+    if not row["ignore"]:
         for label, offset in labels.items():
-            if offset == row[4]:
+            if offset == row["opcount"]-4:
                 print(label+":")
-    if not row[3]:
-        print(str(row[4]) + "\t" + " ".join([str(v) for v in row[5]]) + "\t" + "\t".join(row[2]))
+        print(str(row["opcount"]) + "\t" + " ".join([str(v) for v in row["code"]]) + "\t" + "\t".join(row["opline"]))
 bfile = open("bytecode.js", "w+")
 bfile.write("var code = "+str(code))
 bfile.close()

@@ -58,7 +58,7 @@ function mInit()
   mCanvas.addEventListener('mouseenter', onMouseUpdate, false)
 
 	mContext = mCanvas.getContext('2d')
-  window.setInterval(update, 5)
+  window.setInterval(update, 2)
 }
 
 function cell(index) {
@@ -98,6 +98,7 @@ function process() {
 
 	case 7://JUMP -> OP1
 		state[0] = op1
+    break
 
 	case 11://SUB OP1 <- OP2 - OP3
 		state[op1] = pymod(cell(op2) - cell(op3), state.length)
@@ -133,8 +134,10 @@ function process() {
   case 37://SUBI OP1 <- OP2 - [OP3]
     state[op1] = pymod(cell(op2) - op3, state.length)
 		break
+  case 41://MULI OP1 <- OP2 * [OP3]
+    state[op1] = (cell(op2) * op3) % state.length
+		break
 	}
-
 
 }
 
