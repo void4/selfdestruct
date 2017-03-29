@@ -1,5 +1,6 @@
 start:
 set mouse 1001
+set mouse2 1001
 set offset 3840
 set sixtyfour 64
 set p1 1002
@@ -14,9 +15,12 @@ add p1y p1dy
 mul p1 p1y sixtyfour
 add p1 p1x
 seti p1 255
-seti mouse 0
 add mouse 1 offset
+jumpe mouse mouse2 mousenotmoved
+seti mouse2 0
+mov mouse2 mouse
 seti mouse 255
+mousenotmoved:
 ;check if particle is at mouse position
 jumpn mouse p1 unequal
 add p1x 1
