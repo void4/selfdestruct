@@ -77,7 +77,7 @@ function process() {
 	var op2 = cell(pc+2)
 	var op3 = cell(pc+3)
 
-	state[0] += 4
+	state[0] = (state[0] + 4) % state.length
 
 	switch (op) {
 	case 2://MOV OP1 <- OP2
