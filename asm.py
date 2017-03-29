@@ -38,6 +38,8 @@ index = 0
 code = [4, 0, 0, 0]
 for line in lines:
     line = line.strip().lower()
+    if ";" in line:
+        line = line[:line.find(";")]
     if not line:
         continue
     if line.endswith(":"):
