@@ -47,8 +47,8 @@ function mInit()
 	document.body.appendChild(mCanvas)
 
   function onMouseUpdate(e) {
-      state[1] = Math.min(Math.max(0, parseInt((e.clientX-8)/4)), width-1)
-      state[2] = Math.min(Math.max(0, parseInt((e.clientY-8)/4)), height-1)
+      state[1] = Math.min(Math.max(0, parseInt((e.offsetX-8)/4)), width-1)
+      state[2] = Math.min(Math.max(0, parseInt((e.offsetY-8)/4)), height-1)
       state[3] = state[1] + state[2] * width
       //console.log(state[0], state[1], state[2], state[3])
   }
@@ -140,6 +140,6 @@ function update() {
 <style>
 </style>
 </head>
-<body>
+<body style="background-color:#eee; display:flex; justify-content:center; align-items:center;flex-direction: column; height:400px">
 </body>
 </html>
