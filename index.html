@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+
+window.addEventListener('load', mInit, false)
+
+var width = 64
+var height = width
+
+var state = new Array(width*height).fill(0)
+
+var code = [4, 0, 0, 0, 13, 200, 4046, 0, 13, 201, 64, 0, 13, 202, 1000, 0, 11, 200, 200, 201, 17, 200, 255, 0, 17, 202, 0, 0, 2, 202, 3, 0, 17, 202, 128, 0, 7, 12, 0, 0]
+
+Array.prototype.splice.apply(state, [0, code.length].concat(code));
+
+var mCanvas
+var mContext
+
+function draw()
+{
+
+    var mImgData = mContext.createImageData(width, height)
+
+    var srcIndex=0, dstIndex=0, curPixelNum=0
+
+    for (curPixelNum=0; curPixelNum<width*height;  curPixelNum++)
+    {
+        mImgData.data[dstIndex] = state[srcIndex]        // r
+        mImgData.data[dstIndex+1] = 0//rgbData[srcIndex+1]    // g
+        mImgData.data[dstIndex+2] = 0//rgbData[srcIndex+2]    // b
+        mImgData.data[dstIndex+3] = 255 // 255 = 0xFF - constant alpha, 100% opaque
+        srcIndex += 1
+        dstIndex += 4
+    }
+    mContext.putImageData(mImgData, 0, 0)
+}
+
+var mx = null
+var my = null
+
+function mInit()
+{
+	mCanvas = document.createElement('canvas')
+	mCanvas.width = width
+	mCanvas.height = height
+	mCanvas.setAttribute('style', "width:256px; height:256px; border:solid 1px black; image-rendering: pixelated;") // make it large enough to be visible
+	document.body.appendChild(mCanvas)
+
+  function onMouseUpdate(e) {
+      state[1] = Math.min(Math.max(0, parseInt((e.clientX-8)/4)), width-1)
+      state[2] = Math.min(Math.max(0, parseInt((e.clientY-8)/4)), height-1)
+      state[3] = state[1] + state[2] * width
+      //console.log(state[0], state[1], state[2], state[3])
+  }
+
+  mCanvas.addEventListener('mousemove', onMouseUpdate, false)
+  mCanvas.addEventListener('mouseenter', onMouseUpdate, false)
+
+	mContext = mCanvas.getContext('2d')
+  window.setInterval(update, 25)
+}
+
+function cell(index) {
+	return state[index%state.length]
+}
+
+function pymod(n, m) {
+	return ((n % m) + m) % m
+}
+
+function process() {
+	var pc = cell(0)
+  //console.log(pc)
+	var op = cell(pc)
+	var op1 = cell(pc+1)
+	var op2 = cell(pc+2)
+	var op3 = cell(pc+3)
+
+	state[0] += 4
+
+	switch (op) {
+	case 2://MOV OP1 <- OP2
+		state[op1] = state[op2]
+		break
+
+	case 3://ADD OP1 <- OP2 + OP3
+		state[op1] = (cell(op2) + cell(op3)) % state.length
+		break
+
+	case 5://JUMPI (OP1) -> OP2
+		if (cell(op1) == 0) {
+			state[0] = op2
+		}/* else {
+			state[0] = op3
+		}*/
+		break
+
+	case 7://JUMP -> OP1
+		state[0] = op1
+
+	case 11://SUB OP1 <- OP2 - OP3
+		state[op1] = pymod(cell(op2) - cell(op3), state.length)
+		break
+
+	case 13://SET OP1 <- [OP2]
+		state[op1] = op2
+		break
+
+  case 17://SETI I[OP1] <- [OP2]
+  	state[cell(op1)] = op2
+  	break
+	}
+
+
+}
+
+function update() {
+	process()
+	draw()
+}
+
+
+</script>
+<style>
+</style>
+</head>
+<body>
+</body>
+</html>
