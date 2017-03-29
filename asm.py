@@ -95,6 +95,8 @@ for row in lines:
             code += [19, intorvar(op1), intorvar(op2), intorvar(op3)]
     elif op == "jumpg":
         code += [23, intorvar(op1), intorvar(op2), intorlabel(op3)]
+    elif op == "jumpn":
+        code += [29, intorvar(op1), intorvar(op2), intorlabel(op3)]
     else:
         raise Exception("Unknown opcode")
 
