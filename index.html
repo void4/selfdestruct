@@ -120,11 +120,18 @@ function process() {
 		}
 		break
 
-    case 29://JUMPN (OP1!=OP2) -> OP3
-  		if (cell(op1) != cell(op2)) {
-  			state[0] = op3
-  		}
-  		break
+  case 29://JUMPN (OP1!=OP2) -> OP3
+		if (cell(op1) != cell(op2)) {
+			state[0] = op3
+		}
+		break
+  case 31://ADDI OP1 <- OP2 + [OP3]
+    state[op1] = (cell(op2) + op3) % state.length
+		break
+
+  case 37://SUBI OP1 <- OP2 - [OP3]
+    state[op1] = pymod(cell(op2) - op3, state.length)
+		break
 	}
 
 

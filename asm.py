@@ -2,7 +2,7 @@ f = open("invader.asm")
 lines = f.readlines()
 f.close()
 
-opcodes = ["mul", "seti", "set", "mov", "add", "jumpe", "sub", "jump", "jumpg", "jumpn"]
+opcodes = ["mul", "seti", "set", "mov", "add", "jumpe", "sub", "jump", "jumpg", "jumpn", "addi", "subi"]
 
 labels = {}
 opcounter = 1
@@ -98,6 +98,16 @@ for row in lines:
         code += [23, intorvar(op1), intorvar(op2), intorlabel(op3)]
     elif op == "jumpn":
         code += [29, intorvar(op1), intorvar(op2), intorlabel(op3)]
+    elif op == "addi":
+        if len(line) == 3:
+            code += [31, intorvar(op1), intorvar(op1), intorvar(op2)]
+        else:
+            code += [31, intorvar(op1), intorvar(op2), intorvar(op3)]
+    elif op == "subi":
+        if len(line) == 3:
+            code += [37, intorvar(op1), intorvar(op1), intorvar(op2)]
+        else:
+            code += [37, intorvar(op1), intorvar(op2), intorvar(op3)]
     else:
         raise Exception("Unknown opcode")
 
