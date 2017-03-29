@@ -1,4 +1,4 @@
-f = open("breakout.asm")
+f = open("invader.asm")
 lines = f.readlines()
 f.close()
 
@@ -11,13 +11,13 @@ def addvar(name):
     var[name] = varindex
     varindex += 1
 
-def intorvar(opn):
+def intorvar(opn, reg=False):
     if opn is None:
         return 0
     try:
         return int(opn)
     except ValueError:
-        if not opn in var:
+        if reg and not opn in var:
             addvar(opn)
         return var[opn]
 
@@ -53,7 +53,10 @@ for line in lines:
     if op == "mov":
         code += [2, intorvar(op1), intorvar(op2)]
     elif op == "add":
-        code += [3, intorvar(op1), intorvar(op2), intorvar(op3)]
+        if len(line) == 3:
+            code += [3, intorvar(op1), intorvar(op1), intorvar(op2)]
+        else:
+            code += [3, intorvar(op1), intorvar(op2), intorvar(op3)]
     elif op == "jumpi":
         code += [5, intorvar(op1), intorlabel(op2)]
     elif op == "jump":
@@ -64,7 +67,7 @@ for line in lines:
         else:
             code += [11, intorvar(op1), intorvar(op2), intorvar(op3)]
     elif op == "set":
-        code += [13, intorvar(op1), int(op2)]
+        code += [13, intorvar(op1, reg=True), int(op2)]
     elif op == "seti":
         code += [17, intorvar(op1), int(op2)]
     elif op == "mul":
@@ -81,6 +84,9 @@ for line in lines:
     index += 1
 
 print(code)
+if len(code) > varindex:
+    print(len(code) + "> varindex:", varindex, "aborting!")
+    exit(1)
 
 bfile = open("bytecode.js", "w+")
 bfile.write("var code = "+str(code))

@@ -50,7 +50,7 @@ function mInit()
       state[1] = Math.min(Math.max(0, parseInt((e.clientX-8)/4)), width-1)
       state[2] = Math.min(Math.max(0, parseInt((e.clientY-8)/4)), height-1)
       state[3] = state[1] + state[2] * width
-      console.log(state[0], state[1], state[2], state[3])
+      //console.log(state[0], state[1], state[2], state[3])
   }
 
   mCanvas.addEventListener('mousemove', onMouseUpdate, false)
@@ -111,7 +111,7 @@ function process() {
   	break
 
   case 19://MUL OP1 <- OP2 * OP3
-  	state[cell(op1)] = (cell(op2) * cell(op3)) % state.length
+  	state[op1] = (cell(op2) * cell(op3)) % state.length
   	break
 	}
 
