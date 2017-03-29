@@ -2,8 +2,38 @@ f = open("invader.asm")
 lines = f.readlines()
 f.close()
 
+opcodes = ["mul", "seti", "set", "mov", "add", "jumpe", "sub", "jump", "jumpg"]
+
 labels = {}
-varindex = 400
+opcounter = 1
+
+lines = [[line] for line in lines]
+for row in lines:
+    line = row[0]
+    clean = line.strip().lower()
+    if ";" in clean:
+        clean = clean[:clean.find(";")]
+
+    row.append(clean)
+
+    opline = clean.split(" ")
+    row.append(opline)
+
+    if len(opline) == 1 and opline[0].endswith(":"):
+        labels[opline[0][:-1]] = opcounter
+        ignore = True
+    elif opline[0] in opcodes:
+        opcounter += 1
+        ignore = False
+    elif opline[0]:
+        raise Exception("Invalid symbol:", opline[0])
+    else:
+        ignore = True
+
+    row.append(ignore)
+
+#print("Labels", labels)
+varindex = opcounter + 1#XXX
 var = {}
 
 def addvar(name):
@@ -26,27 +56,13 @@ def intorlabel(opn):
         return int(opn) * 4
     except ValueError:
         return labels[opn] * 4
-"""
-2:MOV OP1 <- OP2
-3:ADD OP1 <- OP2 + OP3
-5:JUMPI (OP1) -> OP2
-7:JUMP -> OP1
-11:SUB OP1 <- OP2 - OP3
-13:SET OP1 <- [OP2]
-"""
-index = 0
+
 code = [4, 0, 0, 0]
-for line in lines:
-    line = line.strip().lower()
-    if ";" in line:
-        line = line[:line.find(";")]
-    if not line:
+for row in lines:
+    #print(row)
+    if row[3]:
         continue
-    if line.endswith(":"):
-        labels[line[:-1]] = index
-        continue
-    print(line)
-    line = line.split(" ")
+    line = row[2]
     op = line[0]
     op1 = line[1]
     op2 = line[2] if len(line)>2 else None
@@ -80,17 +96,11 @@ for line in lines:
     elif op == "jumpg":
         code += [23, intorvar(op1), intorvar(op2), intorlabel(op3)]
     else:
-        print("AHSAH)DA)HFE UNKNOWN OPCODE1111")
-        exit(1)
+        raise Exception("Unknown opcode")
 
     code += [0 for i in range((4-len(code)%4)%4)]
 
-    index += 1
-
 print(code)
-if len(code) > varindex:
-    print(len(code) + "> varindex:", varindex, "aborting!")
-    exit(1)
 
 bfile = open("bytecode.js", "w+")
 bfile.write("var code = "+str(code))
