@@ -2,7 +2,7 @@ f = open("invader.asm")
 lines = f.readlines()
 f.close()
 
-opcodes = ["mul", "seti", "set", "mov", "add", "jumpe", "sub", "jump", "jumpg"]
+opcodes = ["mul", "seti", "set", "mov", "add", "jumpe", "sub", "jump", "jumpg", "jumpn"]
 
 labels = {}
 opcounter = 1
@@ -22,12 +22,13 @@ for row in lines:
     if len(opline) == 1 and opline[0].endswith(":"):
         labels[opline[0][:-1]] = opcounter
         ignore = True
-    elif opline[0] in opcodes:
+    elif opline[0] in opcodes:#meh
         opcounter += 1
         ignore = False
     elif opline[0]:
         raise Exception("Invalid symbol:", opline[0])
     else:
+        #print("IGNORED", row)
         ignore = True
 
     row.append(ignore)

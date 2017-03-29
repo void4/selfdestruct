@@ -17,8 +17,8 @@ seti p1 255
 seti mouse 0
 add mouse 1 offset
 seti mouse 255
-
 ;check if particle is at mouse position
-;jumpe mouse p1 equal
-
+jumpn mouse p1 unequal
+add p1x 1
+unequal:
 jump loop
