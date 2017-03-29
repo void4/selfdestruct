@@ -30,8 +30,8 @@ for row in lines:
     else:
         #print("IGNORED", row)
         ignore = True
-
     row.append(ignore)
+    row.append(opcounter-1)
 
 #print("Labels", labels)
 varindex = opcounter + 1#XXX
@@ -112,9 +112,16 @@ for row in lines:
         raise Exception("Unknown opcode")
 
     code += [0 for i in range((4-len(code)%4)%4)]
+    row.append(code[-4:])
 
 print(code)
-
+for i, row in enumerate(lines):
+    if row[4] in labels.values():
+        for label, offset in labels.items():
+            if offset == row[4]:
+                print(label+":")
+    if not row[3]:
+        print(str(row[4]) + "\t" + " ".join([str(v) for v in row[5]]) + "\t" + "\t".join(row[2]))
 bfile = open("bytecode.js", "w+")
 bfile.write("var code = "+str(code))
 bfile.close()

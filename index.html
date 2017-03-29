@@ -32,6 +32,7 @@ function draw()
         srcIndex += 1
         dstIndex += 4
     }
+    mImgData.data[4*state[0]+1] = 255
     mContext.putImageData(mImgData, 0, 0)
 }
 
@@ -57,7 +58,7 @@ function mInit()
   mCanvas.addEventListener('mouseenter', onMouseUpdate, false)
 
 	mContext = mCanvas.getContext('2d')
-  window.setInterval(update, 25)
+  window.setInterval(update, 5)
 }
 
 function cell(index) {
