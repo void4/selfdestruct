@@ -87,9 +87,9 @@ function process() {
 		state[op1] = (cell(op2) + cell(op3)) % state.length
 		break
 
-	case 5://JUMPI (OP1) -> OP2
-		if (cell(op1) == 0) {
-			state[0] = op2
+	case 5://JUMPE (OP1==OP2) -> OP3
+		if (cell(op1) == cell(op2)) {
+			state[0] = op3
 		}/* else {
 			state[0] = op3
 		}*/
@@ -113,6 +113,12 @@ function process() {
   case 19://MUL OP1 <- OP2 * OP3
   	state[op1] = (cell(op2) * cell(op3)) % state.length
   	break
+
+  case 23://JUMPG (OP1>OP2) -> OP3
+		if (cell(op1) > cell(op2)) {
+			state[0] = op3
+		}
+		break
 	}
 
 

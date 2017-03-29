@@ -57,8 +57,8 @@ for line in lines:
             code += [3, intorvar(op1), intorvar(op1), intorvar(op2)]
         else:
             code += [3, intorvar(op1), intorvar(op2), intorvar(op3)]
-    elif op == "jumpi":
-        code += [5, intorvar(op1), intorlabel(op2)]
+    elif op == "jumpe":
+        code += [5, intorvar(op1), intorvar(op2), intorlabel(op3)]
     elif op == "jump":
         code += [7, intorlabel(op1)]
     elif op == "sub":
@@ -75,6 +75,8 @@ for line in lines:
             code += [19, intorvar(op1), intorvar(op1), intorvar(op2)]
         else:
             code += [19, intorvar(op1), intorvar(op2), intorvar(op3)]
+    elif op == "jumpg":
+        code += [23, intorvar(op1), intorvar(op2), intorlabel(op3)]
     else:
         print("AHSAH)DA)HFE UNKNOWN OPCODE1111")
         exit(1)
