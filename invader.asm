@@ -32,9 +32,11 @@ muli p1 p1y 64
 add p1 p1x
 seti p1 255
 
+set collision 0
+
 ;draw cursor
 addi mouse 1 3840
-jumpe mouse mouse2 mousenotmoved
+;jumpe mouse mouse2 mousenotmoved
 seti mouse2 0
 addi mouse2 1
 seti mouse2 0
@@ -42,18 +44,33 @@ subi mouse2 2
 seti mouse2 0
 addi mouse2 1
 mov mouse2 mouse
+
+jumpn mouse p1 check1
+set collision 1
+check1:
+
 seti mouse 255
 addi mouse 1
+jumpn mouse p1 check2
+set collision 1
+check2:
+
 seti mouse 255
 subi mouse 2
+jumpn mouse p1 check3
+set collision 1
+check3:
+
 seti mouse 255
 addi mouse 1
-mousenotmoved:
+;mousenotmoved:
 
 ;check if particle is at mouse position
-jumpn mouse p1 unequal
+jumpn collision one unequal
 set diry 1
+sub dirx one dirx
 jump endif
+
 unequal:
 jumpg p1y one skip
 set diry 0
