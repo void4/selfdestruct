@@ -1,9 +1,9 @@
-f = open("code.asm")
+f = open("breakout.asm")
 lines = f.readlines()
 f.close()
 
 labels = {}
-varindex = 200
+varindex = 400
 var = {}
 
 def addvar(name):
@@ -67,6 +67,11 @@ for line in lines:
         code += [13, intorvar(op1), int(op2)]
     elif op == "seti":
         code += [17, intorvar(op1), int(op2)]
+    elif op == "mul":
+        if len(line) == 3:
+            code += [19, intorvar(op1), intorvar(op1), intorvar(op2)]
+        else:
+            code += [19, intorvar(op1), intorvar(op2), intorvar(op3)]
     else:
         print("AHSAH)DA)HFE UNKNOWN OPCODE1111")
         exit(1)
@@ -76,3 +81,7 @@ for line in lines:
     index += 1
 
 print(code)
+
+bfile = open("bytecode.js", "w+")
+bfile.write("var code = "+str(code))
+bfile.close()

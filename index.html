@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="bytecode.js" ></script>
 <script>
 
 window.addEventListener('load', mInit, false)
@@ -9,8 +10,6 @@ var width = 64
 var height = width
 
 var state = new Array(width*height).fill(0)
-
-var code = [4, 0, 0, 0, 13, 200, 4046, 0, 13, 201, 64, 0, 13, 202, 1000, 0, 11, 200, 200, 201, 17, 200, 255, 0, 17, 202, 0, 0, 2, 202, 3, 0, 17, 202, 128, 0, 7, 12, 0, 0]
 
 Array.prototype.splice.apply(state, [0, code.length].concat(code));
 
@@ -51,7 +50,7 @@ function mInit()
       state[1] = Math.min(Math.max(0, parseInt((e.clientX-8)/4)), width-1)
       state[2] = Math.min(Math.max(0, parseInt((e.clientY-8)/4)), height-1)
       state[3] = state[1] + state[2] * width
-      //console.log(state[0], state[1], state[2], state[3])
+      console.log(state[0], state[1], state[2], state[3])
   }
 
   mCanvas.addEventListener('mousemove', onMouseUpdate, false)
@@ -109,6 +108,10 @@ function process() {
 
   case 17://SETI I[OP1] <- [OP2]
   	state[cell(op1)] = op2
+  	break
+
+  case 19://MUL OP1 <- OP2 * OP3
+  	state[cell(op1)] = (cell(op2) * cell(op3)) % state.length
   	break
 	}
 
