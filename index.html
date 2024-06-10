@@ -44,8 +44,9 @@ function mInit()
 	mCanvas = document.createElement('canvas')
 	mCanvas.width = width
 	mCanvas.height = height
-	mCanvas.setAttribute('style', "margin-top: 150px; width:512px; height:512px; border:solid 1px black; image-rendering: pixelated;") // make it large enough to be visible
-	document.body.appendChild(mCanvas)
+	mCanvas.setAttribute('style', "margin-top: 25px; width:512px; height:512px; border:solid 1px black; image-rendering: pixelated;") // make it large enough to be visible
+
+	document.getElementById("canvascontainer").appendChild(mCanvas)
 
   function onMouseUpdate(e) {
       state[1] = Math.min(Math.max(0, parseInt((e.offsetX-8)/4)), width-1)
@@ -157,6 +158,8 @@ function update() {
 </style>
 </head>
 <body style="background-color:#eee; display:flex; justify-content:center; align-items:center;flex-direction: column; height:400px">
-	<div style="color: black; margin-top: 300px;">Move the paddle with your mouse</div><br>
+	<div style="color: black; margin-top: 400px;">What you see here is a game of <a href="https://en.wikipedia.org/wiki/Breakout_(video_game)">Breakout</a>, played in its own memory space.<br> The fast moving green dot points to the currently executed instruction.<br>Hitting a memory cell erases it, possibly leading to interesting glitches.</div><br>
+	<div id="canvascontainer"></div>
+	<div style="color: black;">Move the paddle with your mouse</div>
 </body>
 </html>
