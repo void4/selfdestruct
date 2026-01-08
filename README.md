@@ -1,3 +1,3 @@
-# eso
-https://void4.github.io/
+# self destroying breakout game
+
 If it's blurry, use Chrome.
